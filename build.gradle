@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+
+apply plugin: 'scala'
+
+group 'com.homedepot.am'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/io.gatling/gatling-app
+    compile group: 'io.gatling', name: 'gatling-app', version: '2.3.1'
+
+    // https://mvnrepository.com/artifact/io.gatling/gatling-recorder
+    compile group: 'io.gatling', name: 'gatling-recorder', version: '2.3.1'
+
+    // https://mvnrepository.com/artifact/io.gatling.highcharts/gatling-charts-highcharts
+    compile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '2.3.1'
+
+
+}
+
+
+task gatling(type: JavaExec, dependsOn: 'compileTestScala') {
+
+    classpath = sourceSets.test.output + sourceSets.test.runtimeClasspath
+
+    main = 'io.gatling.app.Gatling'
+    args '-sf', sourceSets.test.output,
+            '-bf', sourceSets.test.output.classesDir,
+            '-s', 'SmokeTest',
+            '-rf', "${project.buildDir}" + '/reports/gatling'
+}
